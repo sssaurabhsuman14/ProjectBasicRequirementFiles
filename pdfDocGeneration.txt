@@ -1,0 +1,75 @@
+public ByteArrayInputStream pdfUserPolicyFileReport(List<UserPolicyModel> userPolicyModelList)
+			throws DocumentException, PolicyException {
+
+		Document document = new Document();
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+		PdfPTable table = new PdfPTable(5);
+		table.setWidthPercentage(100);
+		table.setWidths(new int[] { 3, 3,  3, 3, 3 });
+
+		Font headFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
+
+		List<String> pdfHeaderList = new ArrayList<>();
+		pdfHeaderList.add("Policy Id");
+		pdfHeaderList.add("User Name");
+		pdfHeaderList.add("Policy Name");
+		pdfHeaderList.add("Policy Type");
+		pdfHeaderList.add("Date Of Purchase");
+		
+		for(String pdfHeader : pdfHeaderList )
+		{
+			PdfPCell hcell;
+			hcell = new PdfPCell(new Phrase(pdfHeader, headFont));
+			hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+			table.addCell(hcell);
+		}
+		
+		
+
+		for (UserPolicyModel userPolicyModel : userPolicyModelList) {
+
+			List<String> pdfDataList = new ArrayList<>();
+			
+			
+			PdfPCell cell;
+
+			String policyId = userPolicyModel.getPolicyId();
+			
+			PolicyModel policyDetails = policyService.policyDetails(policyId);
+			
+			String policyName = policyDetails.getPolicyName();
+			LocalDate dateOfPurchase = userPolicyModel.getDateOfPurchase();
+			String type = policyDetails.getType();
+			
+			String userId = userPolicyModel.getUserId();
+			User user = getUser(userId);
+			String userName = user.getUserName();
+			
+			pdfDataList.add(policyId);
+			pdfDataList.add(userName);
+			pdfDataList.add(policyName);
+			pdfDataList.add(type);
+			pdfDataList.add(dateOfPurchase.toString());
+			
+			for(String pdfColumn : pdfDataList)
+			{
+				cell = new PdfPCell(new Phrase(pdfColumn));
+				cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+				cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+				table.addCell(cell);
+				
+			}
+
+			
+		}
+
+		PdfWriter.getInstance(document, out);
+		document.open();
+		document.add(table);
+
+		document.close();
+
+		return new ByteArrayInputStream(out.toByteArray());
+
+	}
