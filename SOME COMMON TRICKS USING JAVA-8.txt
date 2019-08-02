@@ -28,3 +28,11 @@ boolean isOptionalPresent = findByStatusOptional.isPresent();
               }
 ----------------------------------------------------------------------------------
 
+SPLIT:
+
+List<String> ageRange = Stream.of(ageLimit.split("-"))
+		.map(elem -> new StringBuilder(elem).toString())
+		.collect(Collectors.toList());
+		
+		
+----------------------------------------------------------------------------------

@@ -1,0 +1,29 @@
+private Integer generateOTP(String referenceId) throws URISyntaxException 
+	{
+		final String baseUrl = "http://localhost:9090/ingbank/otp/generateOtp/";
+		URI uri = new URI(baseUrl);
+
+		return restTemplate.getForObject(uri + referenceId, Integer.class);
+		
+	}
+	
+
+	private void sendOTPMail(String email, String subject, Integer otp) throws URISyntaxException 
+	{
+		final String baseUrl = "http://localhost:9090/ingbank/notifications/email";
+		URI uri = new URI(baseUrl);
+
+		EmailModel emailModel = new EmailModel(email, subject, String.valueOf(otp));
+		
+		restTemplate.postForEntity(uri, emailModel, ResponseData.class);
+	}
+	
+	@Override
+	public String validateOTP(String transactionId, Integer otp) throws URISyntaxException 
+	{
+		final String baseUrl = "http://localhost:9090/ingbank/otp/validateOtp/";
+		URI uri = new URI(baseUrl);
+		
+		return restTemplate.getForObject(uri + transactionId+"/"+otp, String.class);
+	}
+
