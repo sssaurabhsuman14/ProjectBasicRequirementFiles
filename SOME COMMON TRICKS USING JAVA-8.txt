@@ -1,0 +1,30 @@
+-------------------------------------------------------------------------------
+//Model List to Entity Mapping and vice versa
+
+boolean isOptionalPresent = findByStatusOptional.isPresent();
+
+ 
+
+              if(isOptionalPresent)
+
+              {
+
+                     productList = findByStatusOptional.get();
+
+                     productList.stream().forEach(product ->
+
+                     {
+
+                           ProductModel model = new ProductModel();
+
+                           BeanUtils.copyProperties(product, model);
+
+                           productModelList.add(model);
+
+                     }
+
+                                  );
+
+              }
+----------------------------------------------------------------------------------
+
